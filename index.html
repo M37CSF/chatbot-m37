@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocollo CSF1/137 - Chat M37</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            padding: 40px;
+        }
+        .chat-box {
+            border: 2px solid #0f0;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 700px;
+        }
+        input {
+            padding: 10px;
+            width: 80%;
+            margin-top: 10px;
+            background-color: #111;
+            color: #0f0;
+            border: 1px solid #0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-box">
+        <p><strong>🤖 <span style="color: lime">Benvenuto nella mente M37</span></strong></p>
+        <p>💡 Inizia a digitare per esplorare il protocollo...</p>
+        <div id="chat"></div>
+        <input type="text" id="input" placeholder="Scrivi qui la tua domanda...">
+    </div>
+
+    <script>
+        const input = document.getElementById('input');
+        const chat = document.getElementById('chat');
+
+        input.addEventListener('keypress', async function (e) {
+            if (e.key === 'Enter') {
+                const userInput = input.value;
+                input.value = '';
+                chat.innerHTML += `<p><strong>Tu:</strong> ${userInput}</p>`;
+                const response = await fetch('https://chatbot-m37-1.onrender.com/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userInput })
+                });
+                const data = await response.json();
+                chat.innerHTML += `<p><strong>Risposta:</strong> ${data.reply}<br>— Emanuele Migliorese</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
