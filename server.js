@@ -1,24 +1,41 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
-const app = express();
+const cors = require('cors');
+const bodyParser = require('body-parser');
 require('dotenv').config();
+const { Configuration, OpenAIApi } = require('openai');
 
-app.use(express.static('public'));
-app.use(express.json());
+const app = express();
+const port = process.env.PORT || 1000;
 
-const API_KEY = process.env.OPENAI_API_KEY;
+app.use(cors());
+app.use(bodyParser.json());
+
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
 
 app.post('/chat', async (req, res) => {
-  const prompt = req.body.prompt;
-  const openaiResponse = {
-    response: `Sto elaborando la tua richiesta collegata al protocollo CSF1/137...`,
-    autore: 'Emanuele Migliorese'
-  };
-  res.json(openaiResponse);
+  const { message } = req.body;
+
+  try {
+    const response = await openai.createChatCompletion({
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: message }],
+    });
+
+    const reply = response.data.choices[0].message.content;
+    res.json({ reply });
+  } catch (error) {
+    console.error('Errore OpenAI:', error.response ? error.response.data : error.message);
+    res.status(500).json({ error: 'Errore durante la generazione della risposta' });
+  }
 });
 
-const port = process.env.PORT || 10000;
+app.get('/', (req, res) => {
+  res.send('Server attivo. Chatbot M37 - CSF1/137');
+});
+
 app.listen(port, () => {
-  console.log(`Server avviato sulla porta ${port}`);
+  console.log(`Server avviato su http://localhost:${port}`);
 });
