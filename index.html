@@ -2,59 +2,95 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Protocollo CSF1/137</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protocollo CSF1/137 - Chat M37</title>
   <style>
     body {
-      background: black;
-      color: lime;
-      font-family: 'Courier New', monospace;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      animation: glow 2s infinite alternate;
-    }
-
-    h1 {
-      font-size: 3em;
+      background-color: #000;
+      color: #0f0;
+      font-family: 'Courier New', Courier, monospace;
       text-align: center;
-      text-shadow: 0 0 15px lime;
+      padding: 40px;
     }
-
-    @keyframes glow {
-      from { text-shadow: 0 0 5px lime; }
-      to { text-shadow: 0 0 25px lime; }
+    h1 {
+      font-size: 2.5em;
+      text-shadow: 0 0 10px #0f0;
     }
-
-    .chat-box {
-      margin-top: 30px;
-      border: 1px solid lime;
-      padding: 15px;
-      width: 300px;
-      height: 150px;
+    #chat-container {
+      margin: 40px auto;
+      max-width: 700px;
+      background-color: #111;
+      border: 1px solid #0f0;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    #chat-log {
+      height: 300px;
       overflow-y: auto;
-      background: #111;
+      background-color: #000;
+      padding: 10px;
+      border: 1px solid #0f0;
+      margin-bottom: 10px;
+      text-align: left;
     }
-
-    .message {
-      margin: 5px 0;
+    #chat-input {
+      width: 95%;
+      padding: 10px;
+      background-color: #000;
+      color: #0f0;
+      border: 1px solid #0f0;
+      font-family: monospace;
+      font-size: 1em;
     }
-
-    .bot {
-      color: lime;
+    .msg {
+      margin-bottom: 15px;
+    }
+    .author {
+      font-size: 0.8em;
+      color: #888;
+      margin-top: 4px;
     }
   </style>
 </head>
 <body>
-
   <h1>Protocollo CSF1/137<br>migliorese.com</h1>
 
-  <div class="chat-box" id="chatBox">
-    <div class="message bot">🤖 Benvenuto nella mente M37</div>
-    <div class="message bot">💡 Inizia a digitare per esplorare il protocollo...</div>
+  <div id="chat-container">
+    <div id="chat-log">
+      <div class="msg">🤖 <strong>Benvenuto nella mente M37</strong><br>💡 Inizia a digitare per esplorare il protocollo...</div>
+    </div>
+    <input type="text" id="chat-input" placeholder="Scrivi qui la tua domanda...">
   </div>
 
+  <script>
+    const chatInput = document.getElementById('chat-input');
+    const chatLog = document.getElementById('chat-log');
+
+    chatInput.addEventListener('keypress', async function (e) {
+      if (e.key === 'Enter') {
+        const userText = chatInput.value.trim();
+        if (userText === '') return;
+
+        chatLog.innerHTML += `<div class="msg"><strong>Tu:</strong> ${userText}</div>`;
+        const risposta = await generaRisposta(userText);
+
+        chatLog.innerHTML += `
+          <div class="msg">
+            <strong>Risposta:</strong> ${risposta}
+            <div class="author">— Emanuele Migliorese</div>
+          </div>
+        `;
+
+        chatInput.value = '';
+        chatLog.scrollTop = chatLog.scrollHeight;
+      }
+    });
+
+    async function generaRisposta(domanda) {
+      // In futuro potrai collegarlo a OpenAI o al tuo backend Node.js
+      return "Sto elaborando la tua richiesta collegata al protocollo CSF1/137...";
+    }
+  </script>
 </body>
 </html>
+
